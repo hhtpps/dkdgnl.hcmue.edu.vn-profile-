@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Hồ sơ cá nhân | HCMUE</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=Manrope:wght@500;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #eef1f4;
+      --surface: #f7f8fa;
+      --card: #ffffff;
+      --text: #1f2933;
+      --muted: #6e7b87;
+      --line: #e4e9ee;
+      --primary: #2f86e5;
+      --primary-soft: #dcebfd;
+      --shadow: 0 8px 24px rgba(31, 41, 51, 0.08), 0 2px 6px rgba(31, 41, 51, 0.05);
+      --radius-xl: 28px;
+      --radius-lg: 20px;
+      --radius-md: 14px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+    html {
+      scroll-behavior: smooth;
+    }
+    body {
+      margin: 0;
+      font-family: "Be Vietnam Pro", sans-serif;
+      background: radial-gradient(circle at top right, rgba(47, 134, 229, 0.08), transparent 22%),
+        linear-gradient(180deg, #f1f3f6 0%, #eceff3 100%);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .page {
+      width: min(100%, 820px);
+      margin: 0 auto;
+      padding: 22px 18px 28px;
+      transition: filter 0.3s ease;
+    }
+    .page.blur {
+      filter: blur(4px);
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 26px;
+      animation: fadeUp 0.7s ease both;
+      position: relative;
+      z-index: 10;
+    }
+
+    .menu-btn {
+      width: 48px;
+      height: 48px;
+      border: none;
+      background: transparent;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      border-radius: 14px;
+      transition: 0.25s ease;
+      z-index: 110;
+      position: relative;
+    }
+    .menu-btn:hover {
+      background: rgba(255, 255, 255, 0.55);
+      transform: translateY(-1px);
+    }
+
+    .hamburger {
+      width: 24px;
+      height: 18px;
+      position: relative;
+    }
+    .hamburger span {
+      position: absolute;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      border-radius: 99px;
+      background: #7f8b96;
+      transition: 0.3s ease;
+    }
+    .hamburger span:nth-child(1) {
+      top: 0;
+    }
+    .hamburger span:nth-child(2) {
+      top: 7px;
+      width: 70%;
+    }
+    .hamburger span:nth-child(3) {
+      bottom: 0;
+    }
+
+    .avatar-mini {
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      background: linear-gradient(145deg, #2e8cff, #246fd9);
+      display: grid;
+      place-items: center;
+      color: #fff;
+      font-family: "Manrope", sans-serif;
+      font-weight: 800;
+      font-size: 1.9rem;
+      border: 3px solid #d7d19d;
+      box-shadow: 0 6px 16px rgba(47, 134, 229, 0.22);
+      animation: fadeUp 0.8s ease 0.08s both;
+    }
+
+    .panel {
+      background: rgba(255, 255, 255, 0.84);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.7);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .profile-card {
+      padding: 34px 28px 28px;
+      animation: fadeUp 0.8s ease 0.14s both;
+    }
+
+    .identity {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .avatar-large {
+      width: 220px;
+      max-width: 52vw;
+      aspect-ratio: 3 / 4;
+      border-radius: 24px;
+      background: linear-gradient(180deg, #cfd6df, #c5ccd5);
+      display: grid;
+      place-items: center;
+      color: #fff;
+      font-size: clamp(2.8rem, 8vw, 4.4rem);
+      font-family: "Manrope", sans-serif;
+      letter-spacing: 0.04em;
+      margin-bottom: 18px;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
+    }
+
+    .name {
+      font-family: "Manrope", sans-serif;
+      font-size: clamp(2rem, 4vw, 2.5rem);
+      line-height: 1.05;
+      font-weight: 800;
+      margin: 0 0 10px;
+      letter-spacing: -0.03em;
+    }
+
+    .meta {
+      margin: 0;
+      color: var(--muted);
+      font-size: clamp(1.05rem, 2.4vw, 1.32rem);
+      line-height: 1.8;
+      font-weight: 500;
+    }
+
+    .divider {
+      height: 1px;
+      background: var(--line);
+      margin: 28px 0 22px;
+    }
+
+    .action {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+    }
+
+    .btn-outline {
+      width: 100%;
+      min-height: 68px;
+      border-radius: 18px;
+      border: 2px solid rgba(47, 134, 229, 0.35);
+      background: linear-gradient(180deg, #ffffff, #fbfdff);
+      color: var(--primary);
+      font-weight: 800;
+      font-size: clamp(1.15rem, 2.5vw, 1.5rem);
+      font-family: "Be Vietnam Pro", sans-serif;
+      cursor: pointer;
+      transition: 0.25s ease;
+      box-shadow: 0 4px 12px rgba(47, 134, 229, 0.06);
+    }
+    .btn-outline:hover {
+      transform: translateY(-2px);
+      border-color: rgba(47, 134, 229, 0.55);
+      box-shadow: 0 10px 22px rgba(47, 134, 229, 0.12);
+      background: linear-gradient(180deg, #ffffff, #f2f8ff);
+    }
+    .btn-outline:active {
+      transform: translateY(0) scale(0.995);
+    }
+
+    .details-card {
+      margin-top: 26px;
+      padding: 34px 34px 28px;
+      animation: fadeUp 0.85s ease 0.22s both;
+    }
+
+    .section-title {
+      margin: 0 0 30px;
+      font-family: "Manrope", sans-serif;
+      font-size: clamp(2rem, 4vw, 2.6rem);
+      line-height: 1.05;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+    }
+
+    .detail-list {
+      display: grid;
+      gap: 28px;
+    }
+
+    .detail-item {
+      opacity: 0;
+      transform: translateY(16px);
+      transition: all 0.7s ease;
+    }
+    .detail-item.in-view {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .label {
+      display: block;
+      color: var(--muted);
+      font-size: clamp(1.15rem, 2.4vw, 1.45rem);
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .value {
+      margin: 0;
+      font-size: clamp(1.45rem, 3vw, 2rem);
+      line-height: 1.45;
+      font-weight: 500;
+      word-break: break-word;
+    }
+
+    .footer {
+      text-align: center;
+      padding: 30px 12px 8px;
+      color: var(--muted);
+      animation: fadeUp 0.9s ease 0.28s both;
+    }
+
+    .footer a {
+      color: var(--primary);
+      text-decoration: none;
+      font-size: clamp(1rem, 2vw, 1.25rem);
+      font-weight: 500;
+      transition: 0.2s ease;
+    }
+
+    .footer a:hover {
+      color: #1669c7;
+      text-decoration: underline;
+    }
+
+    .copyright {
+      margin-top: 18px;
+      font-size: clamp(1rem, 2vw, 1.18rem);
+    }
+
+    /* Side menu */
+    .side-sheet {
+      position: fixed;
+      inset: 0 auto 0 0;
+      width: min(84vw, 320px);
+      background: #fff;
+      backdrop-filter: blur(14px);
+      border-right: 1px solid rgba(31, 41, 51, 0.08);
+      box-shadow: 18px 0 40px rgba(31, 41, 51, 0.12);
+      transform: translateX(-100%);
+      transition: transform 0.35s ease;
+      z-index: 100;
+      padding: 22px 18px 22px 22px;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+    .side-sheet.open {
+      transform: translateX(0);
+    }
+
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(25, 35, 45, 0.18);
+      opacity: 0;
+      pointer-events: none;
+      transition: 0.3s ease;
+      z-index: 90;
+    }
+    .overlay.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .sheet-head {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      margin-bottom: 24px;
+    }
+
+    .sheet-head img {
+      display: block;
+      margin-bottom: 16px;
+      max-width: 100%;
+      height: auto;
+    }
+
+    .sheet-links {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      width: 100%;
+    }
+
+    .sheet-links a,
+    .expand-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 1rem;
+      color: #4a5568;
+      background: #f8fafc;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      user-select: none;
+      transition: background-color 0.3s ease;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .sheet-links a.active,
+    .sheet-links a:hover,
+    .expand-btn:hover {
+      background-color: #e0f2fe;
+      color: #0284c7;
+    }
+
+    .expand-btn {
+      justify-content: space-between;
+      width: 100%;
+    }
+
+    .arrow {
+      transition: transform 0.3s ease;
+      font-weight: 700;
+      font-size: 1.2rem;
+      user-select: none;
+    }
+
+    .expand-btn[aria-expanded="true"] .arrow {
+      transform: rotate(90deg);
+    }
+
+    .submenu {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding-left: 24px;
+      margin-top: 6px;
+    }
+
+    .submenu a {
+      background: #f1f5f9;
+      color: #64748b;
+      font-weight: 500;
+      cursor: pointer;
+      border-radius: 10px;
+      padding: 8px 12px;
+      text-decoration: none;
+      transition: background-color 0.3s ease;
+    }
+
+    .submenu a:hover {
+      background-color: #bae6fd;
+      color: #0369a1;
+    }
+
+    .submenu a.disabled {
+      color: #cbd5e1;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(18px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 600px) {
+      .page {
+        padding: 16px 14px 24px;
+      }
+      .profile-card {
+        padding: 28px 18px 22px;
+      }
+      .details-card {
+        padding: 28px 18px 22px;
+      }
+      .btn-outline {
+        min-height: 62px;
+      }
+      .avatar-mini {
+        width: 54px;
+        height: 54px;
+        font-size: 1.7rem;
+      }
+      .side-sheet {
+        width: 80vw;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="overlay" id="overlay"></div>
+
+  <aside class="side-sheet" id="sideSheet" aria-hidden="true">
+    <div class="sheet-head">
+      <img src="https://dkdgnl.hcmue.edu.vn/images/logo-sp.png" alt="Đại học Sư phạm TP.HCM" style="height:40px; margin-bottom:16px;" />
+      <nav class="sheet-links">
+        <a href="#" class="active"><span class="icon" aria-hidden="true">👤</span> Thông tin thí sinh</a>
+        <div class="expandable">
+          <button class="expand-btn" aria-expanded="false" aria-controls="submenu1" aria-haspopup="true">
+            <span class="icon" aria-hidden="true">🎓</span> Dự thi ĐGNL chuyên biệt <span class="arrow">▸</span>
+          </button>
+          <div class="submenu" id="submenu1" hidden>
+            <a href="#" class="disabled" tabindex="-1" aria-disabled="true">Đăng ký dự thi</a>
+            <a href="#">Kết quả đăng ký</a>
+            <a href="#">Tra cứu phòng thi</a>
+            <a href="#">Xem điểm thi</a>
+          </div>
+        </div>
+      </nav>
+    </div>
+  </aside>
+
+  <main class="page" id="mainContent" tabindex="-1">
+    <header class="topbar">
+      <button class="menu-btn" id="openSheet" aria-label="Mở menu" aria-haspopup="true" aria-controls="sideSheet" aria-expanded="false">
+        <span class="hamburger" aria-hidden="true">
+          <span></span>
+          <span></span>
+          <span></span>
+        </span>
+      </button>
+
+      <div class="avatar-mini" aria-label="Ảnh đại diện">T</div>
+    </header>
+
+    <section class="panel profile-card" id="profile">
+      <div class="identity">
+        <div class="avatar-large" aria-label="Ảnh đại diện lớn">T</div>
+        <h1 class="name">Trần Tấn Tài</h1>
+        <p class="meta">Số CCCD: 062208007075</p>
+        <p class="meta">Ngày sinh: 15/09/2008</p>
+        <p class="meta">Email: trantantai373@gmail.com</p>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="action">
+        <button class="btn-outline" id="changePasswordBtn">Đổi mật khẩu</button>
+      </div>
+    </section>
+
+    <section class="panel details-card" id="details">
+      <h2 class="section-title">Thông tin chi tiết</h2>
+
+      <div class="detail-list">
+        <div class="detail-item reveal">
+          <span class="label">Họ và tên</span>
+          <p class="value">Trần Tấn Tài</p>
+        </div>
+
+        <div class="detail-item reveal">
+          <span class="label">Số điện thoại</span>
+          <p class="value">0329923789</p>
+        </div>
+
+        <div class="detail-item reveal">
+          <span class="label">Trường học</span>
+          <p class="value">THPT Nguyễn Văn Cừ, Xã Đăk Tô, Quảng Ngãi</p>
+        </div>
+
+        <div class="detail-item reveal">
+          <span class="label">Ngày đăng ký tài khoản</span>
+          <p class="value">03/04/2026 17:03:59</p>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer" id="footer">
+      <a href="javascript:void(0)">Điều khoản sử dụng</a>
+      <div class="copyright">© 2026 Trường Đại học Sư phạm TP.HCM</div>
+    </footer>
+  </main>
+
+  <script>
+    const openSheet = document.getElementById("openSheet");
+    const sideSheet = document.getElementById("sideSheet");
+    const overlay = document.getElementById("overlay");
+    const changePasswordBtn = document.getElementById("changePasswordBtn");
+    const pageMain = document.querySelector(".page");
+
+    function openMenu() {
+      sideSheet.classList.add("open");
+      overlay.classList.add("show");
+      sideSheet.setAttribute("aria-hidden", "false");
+      openSheet.setAttribute("aria-expanded", "true");
+      pageMain.classList.add("blur");
+    }
+
+    function closeMenu() {
+      sideSheet.classList.remove("open");
+      overlay.classList.remove("show");
+      sideSheet.setAttribute("aria-hidden", "true");
+      openSheet.setAttribute("aria-expanded", "false");
+      pageMain.classList.remove("blur");
+    }
+
+    openSheet.addEventListener("click", () => {
+      if (sideSheet.classList.contains("open")) {
+        closeMenu();
+      } else {
+        openMenu();
+      }
+    });
+
+    overlay.addEventListener("click", closeMenu);
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") closeMenu();
+    });
+
+    changePasswordBtn.addEventListener("click", () => {
+      alert("Chức năng đổi mật khẩu đang được phát triển.");
+    });
+
+    // Xử lý mở rộng/thu gọn submenu
+    document.querySelectorAll(".expand-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const expanded = btn.getAttribute("aria-expanded") === "true";
+        btn.setAttribute("aria-expanded", !expanded);
+        const submenu = btn.nextElementSibling;
+        if (submenu) {
+          if (expanded) {
+            submenu.hidden = true;
+          } else {
+            submenu.hidden = false;
+          }
+        }
+      });
+    });
+
+    // Hiệu ứng reveal cho các phần chi tiết
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry, index) => {
+          if (entry.isIntersecting) {
+            setTimeout(() => {
+              entry.target.classList.add("in-view");
+            }, index * 90);
+          }
+        });
+      },
+      { threshold: 0.18 }
+    );
+
+    document.querySelectorAll(".reveal").forEach((el) => observer.observe(el));
+  </script>
+</body>
+</html>
